@@ -6,30 +6,37 @@
 :root {
   --background: rgb(253, 247, 196);
   --secondary-background: rgb(255, 255, 255);
+  --header-background: rgb(243, 214, 95);
   --foreground: rgb(0, 0, 0);
   --main-foreground: rgb(0, 0, 0);
-  --main: rgb(250, 204, 0);
+  --main: rgb(255, 176, 59);
   --border: rgb(0, 0, 0);
   --ring: rgb(0, 0, 0);
   --overlay: rgb(0, 0, 0, 0.8);
   --shadow: 2px 2px 0px 0px var(--border);
+  --sb-track-color: rgb(255, 247, 187);
+  --sb-thumb-color: rgb(52, 42, 16);
 }
 
 .dark {
-  --background: rgb(50, 44, 21);
-  --secondary-background: rgb(31, 31, 31);
-  --foreground: rgb(230, 230, 230);
-  --main-foreground: rgb(0, 0, 0);
-  --main: rgb(224, 183, 0);
+  --background: rgb(24, 24, 27);
+  --secondary-background: rgb(39, 39, 42);
+  --header-background: rgb(63, 63, 70);
+  --foreground: rgb(244, 244, 245);
+  --main-foreground: rgb(24, 24, 27);
+  --main: rgb(250, 204, 21);
   --border: rgb(0, 0, 0);
-  --ring: rgb(0, 0, 0);
+  --ring: rgb(250, 204, 21);
   --shadow: 2px 2px 0px 0px var(--border);
+  --sb-track-color: rgb(39, 39, 42);
+  --sb-thumb-color: rgb(250, 204, 21);
 }
 
 @theme inline {
   --color-main: var(--main);
   --color-background: var(--background);
   --color-secondary-background: var(--secondary-background);
+  --color-header-background: var(--header-background);
   --color-foreground: var(--foreground);
   --color-main-foreground: var(--main-foreground);
   --color-border: var(--border);
@@ -44,4 +51,64 @@
   --shadow-shadow: var(--shadow);
   --font-weight-base: 500;
   --font-weight-heading: 700;
+}
+
+/* Custom Scrollbar Styles */
+::-webkit-scrollbar {
+  width: 16px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--sb-track-color);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--sb-thumb-color);
+}
+
+.narrow-scrollbar::-webkit-scrollbar {
+  width: 10px;
+  height: 5px;
+}
+
+@supports not selector(::-webkit-scrollbar) {
+  * {
+    scrollbar-color: var(--sb-thumb-color) var(--sb-track-color);
+  }
+
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+}
+
+@supports (scrollbar-color: auto) {
+  * {
+    scrollbar-color: var(--sb-thumb-color) var(--sb-track-color);
+  }
+}
+
+/* view transition */
+::view-transition-group(root) {
+  animation-timing-function: var(--expo-out);
+}
+
+::view-transition-new(root) {
+  mask: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40"><defs><filter id="blur"><feGaussianBlur stdDeviation="2"/></filter></defs><circle cx="40" cy="0" r="18" fill="white" filter="url(%23blur)"/></svg>') top right / 0 no-repeat;
+  mask-origin: content-box;
+  animation: scale 1s;
+  transform-origin: top right;
+}
+
+::view-transition-old(root),
+.dark::view-transition-old(root) {
+  animation: scale 1s;
+  transform-origin: top right;
+  z-index: -1;
+}
+
+@keyframes scale {
+  to {
+    mask-size: 350vmax;
+  }
 }

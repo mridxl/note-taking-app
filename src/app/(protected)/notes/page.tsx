@@ -1,7 +1,8 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { signout } from "../../(auth)/actions";
+import { Plus } from "lucide-react";
 
 export default async function NotesPage() {
   const supabase = await createClient();
@@ -15,12 +16,12 @@ export default async function NotesPage() {
     <div className="container mx-auto py-10">
       <div className="mb-10 flex items-center justify-between">
         <h1 className="text-3xl font-bold">Your Notes</h1>
-        <div className="flex items-center gap-4">
-          <p>Hello {data.user.email}</p>
-          <form action={signout}>
-            <Button type="submit">Sign out</Button>
-          </form>
-        </div>
+        <Link href="/notes/create">
+          <Button className="flex items-center" variant="default">
+            <Plus size={18} />
+            <span>Create Note</span>
+          </Button>
+        </Link>
       </div>
 
       <div className="grid gap-6">
