@@ -2,9 +2,7 @@ import { redirect } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { Button } from "@/components/ui/button";
-import { ModeToggle } from "@/components/theme-switcher";
-import { signout } from "../(auth)/actions";
+import HeaderMenu from "@/components/header-menu";
 
 export default async function ProtectedLayout({
   children,
@@ -37,15 +35,7 @@ export default async function ProtectedLayout({
             </Link>
           </div>
 
-          <div className="flex items-center gap-4">
-            <p className="text-sm">Hello, {data.user.email}</p>
-            <ModeToggle />
-            <form action={signout}>
-              <Button type="submit" variant="neutral" size="sm">
-                Sign out
-              </Button>
-            </form>
-          </div>
+          <HeaderMenu email={data.user.email} />
         </div>
       </header>
 
