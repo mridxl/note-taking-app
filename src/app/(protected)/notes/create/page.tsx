@@ -142,7 +142,7 @@ export default function CreateNotePage() {
                   type="button"
                   onClick={handleGenerateSummary}
                   disabled={isGeneratingSummary || !formData.content}
-                  className="flex w-38 items-center gap-1 bg-gradient-to-r from-purple-500 to-blue-500 text-white hover:from-purple-600 hover:to-blue-600"
+                  className="flex w-38 items-center gap-1 bg-gradient-to-r from-purple-500 to-blue-500 text-white transition-all duration-300 ease-in-out hover:from-purple-600 hover:to-blue-600 disabled:opacity-100 disabled:grayscale"
                 >
                   <Wand className="h-4 w-4" />
                   {isGeneratingSummary ? "Generating..." : "Generate with AI"}
