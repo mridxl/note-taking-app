@@ -27,6 +27,7 @@ export default function RootLayout({
           toastOptions={{
             className:
               "rounded-base !shadow-shadow border-1 border-border bg-secondary-background text-foreground font-base p-3 text-sm",
+            duration: 2000,
           }}
         />
         {children}

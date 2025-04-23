@@ -45,28 +45,13 @@ export async function signup(formData: FormData): Promise<AuthAction> {
       throw new Error(error.errors[0]!.message);
     }
 
-    const { error: signupError, data: authData } = await supabase.auth.signUp({
+    const { error: signupError } = await supabase.auth.signUp({
       email: data.email,
       password: data.password,
     });
 
     if (signupError) {
       throw signupError;
-    }
-
-    // save user to db
-    if (authData.user) {
-      const { error: insertError } = await supabase.from("users").insert({
-        id: authData.user.id,
-        email: authData.user.email,
-        created_at: new Date().toISOString(),
-      });
-
-      if (insertError) {
-        console.error("Error saving user to database:", insertError);
-        // We don't want to throw here as the auth signup was successful
-        // You might want to handle this differently depending on your requirements
-      }
     }
 
     return {

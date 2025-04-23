@@ -29,7 +29,7 @@ export default function AuthForm({
         return;
       }
       if (result.url) {
-        window.open(result.url, "GoogleSignin", "height=600,width=400");
+        window.open(result.url, "_self");
         return;
       } else {
         toast.error("No redirect URL provided");
