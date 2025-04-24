@@ -7,21 +7,20 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { noteSchema } from "@/lib/schemas";
-import { Wand, Loader2 } from "lucide-react";
-import { generateAISummary, createNote } from "../actions";
+import { Loader2 } from "lucide-react";
+import { createNote } from "../actions";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
-import { readStreamableValue } from "ai/rsc";
-import { handleError } from "@/lib/utils";
+import SummaryGenerator from "@/components/summary-generator";
 
 export default function CreateNotePage() {
   const router = useRouter();
+
   const [formData, setFormData] = useState({
     title: "",
     content: "",
     summary: "",
   });
-  const [isGeneratingSummary, setIsGeneratingSummary] = useState(false);
 
   const { mutate: createNoteMutation, isPending: isCreating } = useMutation({
     mutationFn: (data: { title: string; content: string; summary: string }) =>
@@ -43,43 +42,8 @@ export default function CreateNotePage() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleGenerateSummary = async () => {
-    if (!formData.content) {
-      toast.error("Please enter content to generate a summary.");
-      return;
-    }
-
-    setIsGeneratingSummary(true);
-    setFormData((prev) => ({ ...prev, summary: "" }));
-
-    try {
-      const { summary, error } = await generateAISummary(formData.content);
-
-      if (error) {
-        toast.error(error);
-        throw new Error(error);
-      }
-
-      if (summary) {
-        let accumulatedSummary = "";
-        try {
-          for await (const chunk of readStreamableValue(summary)) {
-            accumulatedSummary += chunk;
-            setFormData((prev) => ({ ...prev, summary: accumulatedSummary }));
-          }
-        } catch (streamError) {
-          console.error("Error reading summary stream:", streamError);
-          throw new Error("Error reading summary stream");
-        }
-      } else {
-        throw new Error("No summary was generated");
-      }
-    } catch (error) {
-      toast.error(handleError(error).error);
-      return;
-    } finally {
-      setIsGeneratingSummary(false);
-    }
+  const handleSummaryChange = (summary: string) => {
+    setFormData((prev) => ({ ...prev, summary }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -133,29 +97,11 @@ export default function CreateNotePage() {
           </div>
 
           <div className="order-3 md:col-start-2">
-            <div className="flex flex-col gap-2">
-              <div className="flex items-center justify-between">
-                <Label htmlFor="summary">Summary</Label>
-                <Button
-                  type="button"
-                  onClick={handleGenerateSummary}
-                  disabled={isGeneratingSummary || !formData.content}
-                  className="flex w-38 items-center gap-1 bg-gradient-to-r from-purple-500 to-blue-500 text-white transition-all duration-300 ease-in-out hover:from-purple-600 hover:to-blue-600 disabled:opacity-100 disabled:grayscale"
-                >
-                  <Wand className="h-4 w-4" />
-                  {isGeneratingSummary ? "Generating..." : "Generate with AI"}
-                </Button>
-              </div>
-              <Textarea
-                id="summary"
-                name="summary"
-                value={formData.summary}
-                onChange={handleChange}
-                placeholder="A brief summary of your note..."
-                rows={11}
-                className="resize-none"
-              />
-            </div>
+            <SummaryGenerator
+              content={formData.content}
+              summary={formData.summary}
+              onSummaryChange={handleSummaryChange}
+            />
           </div>
 
           <div className="order-4 md:col-start-2">

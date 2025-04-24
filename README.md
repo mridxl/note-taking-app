@@ -1,29 +1,61 @@
-# Create T3 App
+# Note Taking App
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+A modern, feature-rich note taking application built with Next.js and Supabase.
 
-## What's next? How do I make an app with this?
+## Features
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+- **User Authentication**: Secure login and registration
+- **Create and Edit Notes**: Write and update your notes.
+- **Mobile Responsive**: Works on all devices
+- **Dark/Light Mode**: Choose your preferred theme
+- **Google AI Integration**: Smart features powered by Google AI
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+## Tech Stack
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Drizzle](https://orm.drizzle.team)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+This application is built with the following technologies:
 
-## Learn More
+- [Next.js](https://nextjs.org) - React framework for server-side rendering and static site generation
+- [Supabase](https://supabase.io) - Backend as a service for database and authentication
+- [Tailwind CSS](https://tailwindcss.com) - Utility-first CSS framework
+- [shadcn/ui](https://ui.shadcn.com/) - UI component library
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+## Getting Started
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+### Prerequisites
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+- Node.js
+- pnpm
 
-## How do I deploy this?
+### Installation
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+1. Clone the repository
+2. Install dependencies
+
+```bash
+pnpm install
+```
+
+3. Create a `.env` file with your environment variables (see `.env.example`)
+4. Run the development server
+
+```bash
+pnpm dev
+```
+
+## Project Structure
+
+- `/src/app` - Next.js app router
+  - `/(auth)` - Authentication routes (login, register)
+  - `/(protected)` - Routes that require authentication
+    - `/notes` - Note management pages
+- `/src/components` - Reusable UI components
+- `/src/lib` - Utility functions and libraries
+  - `/supabase` - Supabase client and type definitions
+
+## Deployment
+
+This app can be deployed on Vercel or any other Next.js compatible hosting service.
+
+## License
+
+MIT

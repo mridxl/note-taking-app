@@ -2,11 +2,6 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { handleError } from "@/lib/utils";
-import {
-  createGoogleGenerativeAI,
-  createStreamableValue,
-  streamText,
-} from "@/lib/googleAI";
 
 export type Note = {
   id: string;
@@ -183,51 +178,6 @@ export async function deleteNoteById(noteId: string) {
     return {
       success: false,
       error: handleError(error).error,
-    };
-  }
-}
-
-/**
- * Generates an AI summary for note content using Gemini
- */
-export async function generateAISummary(content: string) {
-  try {
-    const googleAI = createGoogleGenerativeAI({
-      apiKey: process.env.GEMINI_API_KEY,
-    });
-
-    const streamableAI = createStreamableValue();
-    const prompt = `Summarize the following note content in a concise paragraph:\n\n${content}`;
-
-    void (async () => {
-      try {
-        const { textStream } = streamText({
-          model: googleAI("gemini-1.5-flash"),
-          prompt,
-        });
-
-        // Stream the response
-        let accumulatedText = "";
-        for await (const delta of textStream) {
-          accumulatedText += delta;
-          streamableAI.update(accumulatedText);
-        }
-        streamableAI.done();
-      } catch (error) {
-        console.error("Error generating AI summary:", error);
-        streamableAI.error(
-          new Error("Failed to generate summary. Please try again later."),
-        );
-        streamableAI.done();
-      }
-    })();
-
-    return { summary: streamableAI.value, error: null };
-  } catch (error) {
-    console.error("Outer error generating AI summary:", error);
-    return {
-      summary: null,
-      error: handleError(error).error || "An unexpected error occurred.",
     };
   }
 }
