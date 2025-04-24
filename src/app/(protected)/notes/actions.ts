@@ -102,6 +102,8 @@ export async function createNote(note: {
 
     if (error) throw error;
 
+    revalidatePath("/notes");
+
     return { note: data[0], error: null };
   } catch (error) {
     return {
@@ -142,6 +144,9 @@ export async function updateNoteById(
 
     if (error) throw error;
 
+    revalidatePath("/notes");
+    revalidatePath(`/notes/${noteId}`);
+
     return { note: data[0], error: null };
   } catch (error) {
     return {
@@ -166,6 +171,9 @@ export async function deleteNoteById(noteId: string) {
     const { error } = await supabase.from("notes").delete().eq("id", noteId);
 
     if (error) throw error;
+
+    revalidatePath("/notes");
+    revalidatePath(`/notes/${noteId}`);
 
     return { success: true, error: null };
   } catch (error) {
