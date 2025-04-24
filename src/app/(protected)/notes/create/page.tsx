@@ -9,12 +9,13 @@ import { Label } from "@/components/ui/label";
 import { noteSchema } from "@/lib/schemas";
 import { Loader2 } from "lucide-react";
 import { createNote } from "../actions";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
 import SummaryGenerator from "@/components/summary-generator";
 
 export default function CreateNotePage() {
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   const [formData, setFormData] = useState({
     title: "",
@@ -25,7 +26,8 @@ export default function CreateNotePage() {
   const { mutate: createNoteMutation, isPending: isCreating } = useMutation({
     mutationFn: (data: { title: string; content: string; summary: string }) =>
       createNote(data),
-    onSuccess: () => {
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["notes"] });
       toast.success("Note created successfully");
       router.push("/notes");
     },
