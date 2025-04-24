@@ -1,5 +1,4 @@
 "use client";
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,13 +9,10 @@ import { login, signInWithGoogle, signup } from "@/app/(auth)/actions";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { loginSchema, registerSchema } from "@/lib/schemas";
+import { motion } from "framer-motion";
 
-export default function AuthForm({
-  className,
-  ...props
-}: React.HTMLProps<HTMLDivElement> & { type: "login" | "register" }) {
+export default function AuthForm({ type }: { type: "login" | "register" }) {
   const router = useRouter();
-  const { type } = props;
   const isLoginForm = type === "login";
   const [isPending, startTransition] = React.useTransition();
 
@@ -70,7 +66,13 @@ export default function AuthForm({
   };
 
   return (
-    <div className={cn("flex flex-col gap-6", className)} {...props}>
+    <motion.div
+      className="flex flex-col gap-6"
+      key={type}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.75, ease: "easeInOut" }}
+    >
       <form onSubmit={handleSubmit} className="flex flex-col gap-6">
         <div className="flex flex-col gap-6">
           <div className="flex flex-col items-center gap-2">
@@ -146,6 +148,6 @@ export default function AuthForm({
           </Button>
         </div>
       </form>
-    </div>
+    </motion.div>
   );
 }
