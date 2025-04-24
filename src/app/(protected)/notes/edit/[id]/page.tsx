@@ -29,7 +29,7 @@ export default async function EditNotePage({ params }: EditNotePageProps) {
   }
 
   return (
-    <div className="mx-auto max-w-6xl p-4">
+    <div className="mx-auto pt-9 pb-6">
       <div className="mb-6">
         <h1 className="font-heading text-2xl">Edit Note</h1>
         <p className="text-foreground/70">Update your note details</p>

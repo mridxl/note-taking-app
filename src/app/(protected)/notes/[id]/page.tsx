@@ -32,7 +32,7 @@ export default async function NotePage({ params }: NotePageParams) {
   }
 
   return (
-    <div className="container mx-auto py-10">
+    <div className="mx-auto py-10">
       <div className="mb-6 flex items-center justify-between">
         <Link href="/notes">
           <Button variant="noShadow" className="flex items-center gap-2">

@@ -18,19 +18,15 @@ export default function SummaryGenerator({
   summary,
   onSummaryChange,
 }: SummaryGeneratorProps) {
-  const oldSummary = summary;
   const { isLoading, completion, setCompletion, complete } = useCompletion({
     api: "/api/summarize",
     initialCompletion: summary,
-    onError: () => {
-      onSummaryChange(oldSummary);
-      toast.error("Failed to generate summary. Please try again.");
-    },
-    onFinish: () => {
+    onFinish(prompt, completion) {
       onSummaryChange(completion);
-      toast.success("Summary generated successfully!");
+      toast.success("Summary generated successfully");
     },
   });
+
   return (
     <div className="flex flex-col gap-2">
       <div className="flex items-center justify-between">
@@ -58,7 +54,7 @@ export default function SummaryGenerator({
       <Textarea
         id="summary"
         name="summary"
-        value={completion}
+        value={isLoading ? completion : summary}
         onChange={(e) => onSummaryChange(e.target.value)}
         placeholder="A brief summary of your note..."
         rows={11}

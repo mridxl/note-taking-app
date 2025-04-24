@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -49,11 +49,12 @@ export default function EditNoteForm({ noteId }: EditNoteFormProps) {
       summary: string;
     }) => updateNoteById(noteId, formData),
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ["notes"] });
-      await queryClient.invalidateQueries({ queryKey: ["note", noteId] });
-
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["notes"] }),
+        queryClient.invalidateQueries({ queryKey: ["note", noteId] }),
+      ]);
       toast.success("Note updated successfully");
-      router.push("/notes");
+      router.push("/notes/" + noteId);
     },
     onError: (error) => {
       console.error("Error updating note:", error);
@@ -68,23 +69,21 @@ export default function EditNoteForm({ noteId }: EditNoteFormProps) {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSummaryChange = (summary: string) => {
+  const handleSummaryChange = useCallback((summary: string) => {
     setFormData((prev) => ({ ...prev, summary }));
-  };
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Use safeParse instead of parse to avoid throwing errors
     const validation = noteSchema.safeParse(formData);
 
     if (!validation.success) {
-      // Handle validation errors using the format from auth-form
       const errorMessage = validation.error.errors[0]!.message;
       toast.error(errorMessage);
       return;
     }
-    // Call the update mutation
+    console.log("Form data:", formData);
     updateNote(formData);
   };
 

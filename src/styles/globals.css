@@ -16,7 +16,7 @@
   --overlay: rgb(0, 0, 0, 0.8);
   --shadow: 2px 2px 0px 0px var(--border);
   --sb-track-color: rgb(255, 247, 187);
-  --sb-thumb-color: rgb(52, 42, 16);
+  --sb-thumb-color: rgb(181, 125, 42);
 }
 
 .dark {
@@ -113,5 +113,44 @@
 @keyframes scale {
   to {
     mask-size: 350vmax;
+  }
+}
+
+/* container class */
+.layout-container {
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+@media (min-width: 640px) {
+  .layout-container {
+    max-width: 640px;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .layout-container {
+    max-width: 768px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .layout-container {
+    max-width: 1024px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .layout-container {
+    max-width: 1280px;
+    padding-left: 2rem;
+    padding-right: 2rem;
   }
 }

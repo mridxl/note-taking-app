@@ -15,9 +15,9 @@ export default async function ProtectedLayout({
   }
 
   return (
-    <div className="flex min-h-svh flex-col">
+    <div className="flex min-h-svh w-full flex-col">
       <header className="border-border bg-header-background border-b">
-        <div className="container mx-auto flex h-16 items-center justify-between px-4">
+        <div className="mx-auto flex h-16 items-center justify-between px-4">
           <div className="flex items-center gap-2">
             <Link href="/notes" className="flex items-center gap-2">
               <Image
@@ -37,7 +37,7 @@ export default async function ProtectedLayout({
         </div>
       </header>
 
-      <main className="flex-1">{children}</main>
+      <main className="layout-container mx-auto flex-1">{children}</main>
     </div>
   );
 }

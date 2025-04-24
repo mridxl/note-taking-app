@@ -49,6 +49,13 @@ export default function NoteContent({ noteId }: NoteContentProps) {
           Last updated: {formattedDate(note.updated_at)}
         </p>
 
+        {note.summary && (
+          <div className="dark:bg-secondary-background/70 mb-6 rounded-md border bg-[#fbe7a3] p-4">
+            <h2 className="mb-2 text-lg font-semibold">Summary</h2>
+            <p className="text-muted-foreground">{note.summary}</p>
+          </div>
+        )}
+
         <div className="prose dark:prose-invert max-w-none">
           {note.content ? (
             note.content.split("\n\n").map((paragraph, idx) => (
