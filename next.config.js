@@ -5,6 +5,13 @@
 import "./src/env.js";
 
 /** @type {import("next").NextConfig} */
-const config = {};
+const config = {
+  experimental: {
+    staleTimes: {
+      dynamic: 30,
+      static: 120,
+    },
+  },
+};
 
 export default config;
