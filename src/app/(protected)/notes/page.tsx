@@ -4,24 +4,28 @@ import Link from "next/link";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Plus, Search } from "lucide-react";
+import { Loader2, Plus, Search } from "lucide-react";
 import { NoteCard } from "@/components/note-card";
-import { mockNotes } from "@/lib/mock";
+import { useQuery } from "@tanstack/react-query";
+import { fetchNotes } from "./actions";
 
 export default function NotesPage() {
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Using mock data instead of Supabase
-  const notes = mockNotes;
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["notes"],
+    queryFn: fetchNotes,
+  });
 
-  // Filter notes based on search query
+  const notes = data?.notes ?? [];
+
   const filteredNotes =
     searchQuery.trim() === ""
       ? notes
       : notes.filter(
           (note) =>
-            note.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            note.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            note.title?.toLowerCase().includes(searchQuery.toLowerCase()) ??
+            note.content?.toLowerCase().includes(searchQuery.toLowerCase()) ??
             note.summary?.toLowerCase().includes(searchQuery.toLowerCase()),
         );
 
@@ -49,7 +53,20 @@ export default function NotesPage() {
         </div>
       </div>
 
-      {filteredNotes.length === 0 ? (
+      {isLoading ? (
+        <div className="flex h-64 items-center justify-center">
+          <Loader2 className="text-primary h-8 w-8 animate-spin" />
+        </div>
+      ) : error ? (
+        <div className="mt-10 flex flex-col items-center justify-center rounded-lg border-2 border-dashed p-12 text-center">
+          <h3 className="mb-2 text-xl font-medium text-red-500">
+            Error loading notes
+          </h3>
+          <p className="text-muted-foreground mb-6">
+            Please try refreshing the page
+          </p>
+        </div>
+      ) : filteredNotes.length === 0 ? (
         <div className="mt-10 flex flex-col items-center justify-center rounded-lg border-2 border-dashed p-12 text-center">
           {searchQuery.trim() !== "" ? (
             <>

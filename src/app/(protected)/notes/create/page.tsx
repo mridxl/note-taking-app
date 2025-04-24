@@ -7,7 +7,12 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { noteSchema } from "@/lib/schemas";
-import { Wand } from "lucide-react";
+import { Wand, Loader2 } from "lucide-react";
+import { generateAISummary, createNote } from "../actions";
+import { useMutation } from "@tanstack/react-query";
+import { toast } from "react-hot-toast";
+import { readStreamableValue } from "ai/rsc";
+import { handleError } from "@/lib/utils";
 
 export default function CreateNotePage() {
   const router = useRouter();
@@ -16,8 +21,20 @@ export default function CreateNotePage() {
     content: "",
     summary: "",
   });
-  const [errors, setErrors] = useState<Record<string, string>>({});
   const [isGeneratingSummary, setIsGeneratingSummary] = useState(false);
+
+  const { mutate: createNoteMutation, isPending: isCreating } = useMutation({
+    mutationFn: (data: { title: string; content: string; summary: string }) =>
+      createNote(data),
+    onSuccess: () => {
+      toast.success("Note created successfully");
+      router.push("/notes");
+    },
+    onError: (error) => {
+      console.error("Error creating note:", error);
+      toast.error("Failed to create note. Please try again.");
+    },
+  });
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -27,68 +44,55 @@ export default function CreateNotePage() {
   };
 
   const handleGenerateSummary = async () => {
-    // Don't generate if there's no content
     if (!formData.content) {
-      setErrors((prev) => ({
-        ...prev,
-        content: "Please write some content before generating a summary",
-      }));
+      toast.error("Please enter content to generate a summary.");
       return;
     }
 
     setIsGeneratingSummary(true);
+    setFormData((prev) => ({ ...prev, summary: "" }));
+
     try {
-      // In a real implementation, this would call an AI service
-      // For now, just create a simple summary based on the content
-      const summary = formData.content
-        .split(" ")
-        .slice(0, 20)
-        .join(" ")
-        .concat("...");
+      const { summary, error } = await generateAISummary(formData.content);
 
-      // Add a short delay to simulate AI processing
-      await new Promise((resolve) => setTimeout(resolve, 800));
+      if (error) {
+        toast.error(error);
+        throw new Error(error);
+      }
 
-      setFormData((prev) => ({ ...prev, summary }));
-      // Clear any errors for the summary field
-      setErrors((prev) => ({ ...prev, summary: "" }));
-    } catch {
-      setErrors((prev) => ({
-        ...prev,
-        summary: "Failed to generate summary. Please try again.",
-      }));
+      if (summary) {
+        let accumulatedSummary = "";
+        try {
+          for await (const chunk of readStreamableValue(summary)) {
+            accumulatedSummary += chunk;
+            setFormData((prev) => ({ ...prev, summary: accumulatedSummary }));
+          }
+        } catch (streamError) {
+          console.error("Error reading summary stream:", streamError);
+          throw new Error("Error reading summary stream");
+        }
+      } else {
+        throw new Error("No summary was generated");
+      }
+    } catch (error) {
+      toast.error(handleError(error).error);
+      return;
     } finally {
       setIsGeneratingSummary(false);
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    try {
-      // Validate the form data
-      noteSchema.parse(formData);
+    const validation = noteSchema.safeParse(formData);
 
-      // Form is valid - clear any existing errors
-      setErrors({});
-
-      // Later, this will be connected to your route handler
-      // For now, just log the data and redirect
-      console.log("Note data to be submitted:", formData);
-
-      // Reset form and redirect (will be implemented later)
-      // router.push("/notes");
-    } catch (error: any) {
-      // Handle validation errors
-      const fieldErrors: Record<string, string> = {};
-      if (error.errors) {
-        error.errors.forEach((err: any) => {
-          const field = err.path[0];
-          fieldErrors[field] = err.message;
-        });
-      }
-      setErrors(fieldErrors);
+    if (!validation.success) {
+      const errorMessage = validation.error.errors[0]?.message;
+      if (errorMessage) toast.error(errorMessage);
+      return;
     }
+    createNoteMutation(formData);
   };
 
   return (
@@ -110,9 +114,6 @@ export default function CreateNotePage() {
                 onChange={handleChange}
                 placeholder="Enter note title"
               />
-              {errors.title && (
-                <p className="text-sm text-red-500">{errors.title}</p>
-              )}
             </div>
           </div>
 
@@ -128,9 +129,6 @@ export default function CreateNotePage() {
                 rows={20}
                 className="h-full resize-none"
               />
-              {errors.content && (
-                <p className="text-sm text-red-500">{errors.content}</p>
-              )}
             </div>
           </div>
 
@@ -154,12 +152,9 @@ export default function CreateNotePage() {
                 value={formData.summary}
                 onChange={handleChange}
                 placeholder="A brief summary of your note..."
-                rows={8}
+                rows={11}
                 className="resize-none"
               />
-              {errors.summary && (
-                <p className="text-sm text-red-500">{errors.summary}</p>
-              )}
             </div>
           </div>
 
@@ -172,7 +167,16 @@ export default function CreateNotePage() {
               >
                 Cancel
               </Button>
-              <Button type="submit">Save Note</Button>
+              <Button type="submit" disabled={isCreating}>
+                {isCreating ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Creating...
+                  </>
+                ) : (
+                  "Save Note"
+                )}
+              </Button>
             </div>
           </div>
         </div>

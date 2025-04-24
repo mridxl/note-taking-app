@@ -10,6 +10,7 @@ export const env = createEnv({
     NODE_ENV: z.enum(["development", "test", "production"]),
     SUPABASE_URL: z.string().url(),
     SUPABASE_ANON_KEY: z.string(),
+    GEMINI_API_KEY: z.string().min(1),
   },
 
   /**
@@ -31,6 +32,7 @@ export const env = createEnv({
     SUPABASE_URL: process.env.SUPABASE_URL,
     SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY,
     NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
+    GEMINI_API_KEY: process.env.GEMINI_API_KEY,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

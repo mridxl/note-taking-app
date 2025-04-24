@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
+import { getUser } from "@/lib/supabase/server";
 import HeaderMenu from "@/components/header-menu";
 
 export default async function ProtectedLayout({
@@ -9,10 +9,8 @@ export default async function ProtectedLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const supabase = await createClient();
-
-  const { data, error } = await supabase.auth.getUser();
-  if (error || !data?.user) {
+  const user = await getUser();
+  if (!user) {
     redirect("/login");
   }
 
@@ -35,7 +33,7 @@ export default async function ProtectedLayout({
             </Link>
           </div>
 
-          <HeaderMenu email={data.user.email} />
+          <HeaderMenu email={user.email} />
         </div>
       </header>
 

@@ -89,7 +89,7 @@ export async function signInWithGoogle() {
   }
 }
 
-export async function signout(formData: FormData): Promise<void> {
+export async function signout(_formData: FormData): Promise<void> {
   const supabase = await createClient();
   await supabase.auth.signOut();
 }

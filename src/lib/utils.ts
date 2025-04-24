@@ -21,3 +21,11 @@ export const generateColor = (email: string) => {
   const hue = hash % 360;
   return `hsl(${hue}, 70%, 80%)`;
 };
+
+export const formattedDate = (date: string) => {
+  return new Date(date).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+};

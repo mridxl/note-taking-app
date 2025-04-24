@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 "use client";
 
 import * as React from "react";
@@ -8,7 +7,6 @@ import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 
 export function ModeToggle() {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const { theme, setTheme } = useTheme();
 
   const handleToggleTheme = () => {
