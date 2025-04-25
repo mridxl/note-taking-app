@@ -83,7 +83,6 @@ export default function EditNoteForm({ noteId }: EditNoteFormProps) {
       toast.error(errorMessage);
       return;
     }
-    console.log("Form data:", formData);
     updateNote(formData);
   };
 

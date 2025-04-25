@@ -15,7 +15,7 @@ export default async function NotesPage() {
   });
 
   return (
-    <div className="mx-auto py-10">
+    <div className="mx-auto mt-6">
       <HydrationBoundary state={dehydrate(queryClient)}>
         <NotesClientComponent />
       </HydrationBoundary>

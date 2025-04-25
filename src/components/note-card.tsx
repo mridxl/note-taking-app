@@ -60,7 +60,7 @@ export function NoteCard({ note }: NoteCardProps) {
 
   return (
     <>
-      <Card className="flex h-full min-h-[250px] flex-col bg-[var(--card-bg)] transition-all hover:shadow-md">
+      <Card className="bg-card-background flex h-full min-h-[250px] flex-col transition-all hover:shadow-md">
         <CardHeader className="flex min-h-[70px] flex-col">
           <div className="flex w-full justify-between gap-3">
             <CardTitle className="line-clamp-1 h-7 overflow-hidden text-xl">

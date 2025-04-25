@@ -4,11 +4,12 @@ import Link from "next/link";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Loader2, Plus, Search } from "lucide-react";
+import { Plus, Search } from "lucide-react";
 import { NoteCard } from "@/components/note-card";
 import { useQuery } from "@tanstack/react-query";
 import { fetchNotes } from "./actions";
 import { useIsMobile } from "@/hooks/useMobile";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function NotesClientComponent() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -52,15 +53,22 @@ export default function NotesClientComponent() {
           <Link href="/notes/create">
             <Button className="flex items-center gap-2" variant="default">
               <Plus size={18} />
-              <span>Create Note</span>
+              {!isMobile && <span>Create Note</span>}
             </Button>
           </Link>
         </div>
       </div>
 
       {isLoading ? (
-        <div className="flex h-64 items-center justify-center">
-          <Loader2 className="text-primary h-8 w-8 animate-spin" />
+        <div className="grid h-[calc(100svh-11rem)] gap-6 overflow-y-hidden px-2 max-sm:h-[calc(100svh-13rem)] md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <Skeleton className="bg-card-background h-full min-h-[250px]" />
+          <Skeleton className="bg-card-background h-full min-h-[250px]" />
+          <Skeleton className="bg-card-background h-full min-h-[250px]" />
+          <Skeleton className="bg-card-background h-full min-h-[250px]" />
+          <Skeleton className="bg-card-background h-full min-h-[250px]" />
+          <Skeleton className="bg-card-background h-full min-h-[250px]" />
+          <Skeleton className="bg-card-background h-full min-h-[250px]" />
+          <Skeleton className="bg-card-background h-full min-h-[250px]" />
         </div>
       ) : error ? (
         <div className="mt-10 flex flex-col items-center justify-center rounded-lg border-2 border-dashed p-12 text-center">
@@ -72,7 +80,7 @@ export default function NotesClientComponent() {
           </p>
         </div>
       ) : filteredNotes.length === 0 ? (
-        <div className="flex h-[calc(100vh-12rem)] flex-col items-center justify-center rounded-lg border-2 border-dashed p-12 text-center">
+        <div className="flex h-[calc(100vh-14.5rem)] flex-col items-center justify-center rounded-lg border-2 border-dashed p-12 text-center">
           {searchTerm.trim() !== "" ? (
             <>
               <h3 className="mb-2 text-xl font-medium">
@@ -84,9 +92,8 @@ export default function NotesClientComponent() {
               <Button
                 onClick={() => {
                   setSearchTerm("");
-                  window.history.replaceState(null, "", "/notes");
                 }}
-                variant="noShadow"
+                variant="default"
               >
                 Clear Search
               </Button>
@@ -107,7 +114,7 @@ export default function NotesClientComponent() {
           )}
         </div>
       ) : (
-        <div className="grid gap-6 px-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <div className="mb-6 grid gap-6 px-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {filteredNotes.map((note) => (
             <NoteCard key={note.id} note={note} />
           ))}

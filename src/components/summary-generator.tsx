@@ -57,7 +57,7 @@ export default function SummaryGenerator({
         value={isLoading ? completion : summary}
         onChange={(e) => onSummaryChange(e.target.value)}
         placeholder="A brief summary of your note..."
-        rows={11}
+        rows={10}
         className="resize-none"
       />
     </div>
