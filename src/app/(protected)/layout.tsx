@@ -15,7 +15,7 @@ export default async function ProtectedLayout({
   }
 
   return (
-    <div className="flex min-h-svh w-full flex-col">
+    <div className="flex min-h-svh h-svh w-full flex-col">
       <header className="border-border bg-header-background border-b">
         <div className="mx-auto flex h-16 items-center justify-between px-4">
           <div className="flex items-center gap-2">
